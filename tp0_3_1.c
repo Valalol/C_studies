@@ -1,8 +1,27 @@
 #include <stdio.h>
-#include <math.h>
+
+void pretty_print(int *tab, int height, int width) {
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            printf("%d ", *(tab + i * width + j));
+        }
+        printf("\n");
+    }
+}
+
 
 int main() {
-    int tab[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    printf("%d", tab[0][0]);
+    int height = 8, width = 7;
+    int tab[height][width];
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            tab[i][j] = (i+1)*10 + j+1;
+        }
+    }
+
+    pretty_print(*tab, height, width);
+
     return(0);
 }
