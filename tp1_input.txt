@@ -1,0 +1,15 @@
+<H>Titre A de niveau a
+<P>Introduction</P>
+<H>Titre A de niveau b
+<P>Description des éléments du titre A de niveau b</P>
+</H>
+<H>Titre B de niveau b
+<P>Description des éléments du titre B de niveau b</P>
+<H>Titre A de niveau c
+<P>Description des éléments du titre A de niveau c</P>
+</H>
+</H>
+</H>
+<H>Titre B de niveau a
+<P>Conclusion</P>
+</H>
