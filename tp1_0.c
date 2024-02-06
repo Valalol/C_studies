@@ -17,6 +17,19 @@ int string_are_equal(char *a, char *b) {
 }
 
 int get_balises(FILE *pFile) {
+    char *pile_balises_ouvertes[50];
+    int n_pile = 0;
+
+    char cur_balise[50];
+    int n_cur_balise = 0;
+
+    enum Balise_type {
+        ouvrante,
+        fermante
+    };
+
+    enum Balise_type cur_balise_type;
+
     enum Etats {
         avant_balise,
         lecture_balise,
@@ -25,8 +38,7 @@ int get_balises(FILE *pFile) {
 
     enum Etats cur_etat;
     cur_etat = avant_balise;
-    char c;
-    c = fgetc(pFile);
+    char c = fgetc(pFile);
 
     while(!feof(pFile)) {
         c = fgetc(pFile);
@@ -40,25 +52,43 @@ int get_balises(FILE *pFile) {
 
             case lecture_balise:
             if (c == '>') {
-                printf("\n");
+                cur_balise[n_cur_balise] = '\0';
+                n_cur_balise = 0;
+                if (cur_balise_type == ouvrante) {
+                    printf("Balise ouvrante : %s\n", cur_balise);
+                    pile_balises_ouvertes[n_pile] = cur_balise;
+                    n_pile++;
+                } else {
+                    printf("Balise fermante : %s\n", cur_balise);
+                }
+
                 cur_etat = avant_balise;
-            } else {
-                printf("%c",c);
+            } 
+            else {
+                cur_balise[n_cur_balise] = c;
+                n_cur_balise++;
+
             }
             break;
 
             case lecture_type_balise:
             if (c == '/') {
-                printf("Balise fermante : ");
+                cur_balise_type = fermante;
                 cur_etat = lecture_balise;
-            } else {
-                printf("Balise ouvrante : %c", c);
+            } 
+            else {
+                cur_balise_type = ouvrante;
+
+                cur_balise[n_cur_balise] = c;
+                n_cur_balise++;
+
                 cur_etat = lecture_balise;
             }
             break;
         }
     }
     return 0;
+
 }
 
 
