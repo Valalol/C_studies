@@ -3,7 +3,7 @@
 #include <string.h>
 #include "pile.h"
 
-int gml_check(FILE *pFile) {
+void gml_check(FILE *pFile) {
     // on crée une pile et une chaine de caractères
     struct Pile pile_balises;
     init_pile(&pile_balises);
@@ -22,7 +22,9 @@ int gml_check(FILE *pFile) {
     enum Etats {
         avant_balise,
         lecture_balise,
-        lecture_type_balise
+        lecture_type_balise,
+        lecture_arguments,
+        fin_balise
     };
 
     enum Etats cur_etat;
@@ -64,29 +66,62 @@ int gml_check(FILE *pFile) {
                 // on termine le string par un \0
                 string_array[n_string] = '\0';
                 n_string = 0;
-                // Si la balise était ouvrante, on l'ajoute à la pile
-                if (cur_balise_type == ouvrante) {
-                    pilePush(&pile_balises, string_array);
+
+                // si on trouve un espace, on commence à lire les arguments, sinon si on trouve un '>' on passe à la fin de la lecture de balise
+                if (c == '>') {
+                    cur_etat = fin_balise;
                 } else {
-                    // sinon, on compare le dernier élément de la pile avec la balise actuelle
-                    if (strcmp(string_array, pileTop(&pile_balises))) {
-                        // si les balises sont différentes, on affiche une erreur et on stoppe le programme
-                        printf("Erreur trouvée !\nBalise attendue : </%s> Balise trouvée : </%s>\n", pileTop(&pile_balises), string_array);
-                        return 0;
-                    }
-                    pilePop(&pile_balises);
+                    cur_etat = lecture_arguments;
                 }
-                cur_etat = avant_balise;
             }
             else {
                 string_array[n_string] = c;
                 n_string++;
             }
             break;
+
+            case lecture_arguments:
+            // dès qu'on trouve le '>' on change d'etat
+            if (c == '>') {
+                cur_etat = fin_balise;
+            }
+            break;
+
+            case fin_balise:
+                // on remet le charactère actuel dans le flux
+                ungetc(c, pFile);
+                // Si la balise était ouvrante, on l'ajoute à la pile
+                if (cur_balise_type == ouvrante) {
+                    printf("+ '%s'\n", string_array);
+                    pilePush(&pile_balises, string_array);
+                } else {
+                    // sinon, on compare le dernier élément de la pile avec la balise actuelle
+                    if (strcmp(string_array, pileTop(&pile_balises))) {
+                        // si les balises sont différentes, on affiche une erreur et on stoppe le programme
+                        printf("Erreur trouvée !\nBalise attendue : </%s> Balise trouvée : </%s>\n", pileTop(&pile_balises), string_array);
+                        return;
+                    }
+                    printf("- '%s'\n", pileTop(&pile_balises));
+                    pilePop(&pile_balises);
+                }
+                cur_etat = avant_balise;
+            break;
         }
     }
+
+    // S'il reste des balises non fermée avant la fin du document, on affiche une erreur
+    if (pileSize(&pile_balises) == 1) {
+        printf("une balise non fermée avant la fin du document : </%s>", pileTop(&pile_balises));
+        return;
+    }
+    else if (pileSize(&pile_balises) >= 2) {
+        printf("Plusieurs balises non fermées avant la fin du document dont </%s>", pileTop(&pile_balises));
+        return;
+    }
+
+    // Si le fichier a passé tous les checks, alors il est bien formatté
     printf("Pas d'erreur trouvée");
-    return 0;
+    return;
 }
 
 
