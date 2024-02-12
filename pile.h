@@ -1,27 +1,20 @@
 #pragma once
+#include <stdio.h>
+#include <string.h>
 
 struct Pile {
     char tableau_str[50][20];
     int index;
 };
 
-void init_pile(struct Pile *pile) {
-    pile->index = 0;
-}
+void init_pile(struct Pile *pile);
 
-void pilePush(struct Pile *pile, char *str) {
-    strcpy(pile->tableau_str[pile->index], str);
-    pile->index++;
-}
+void pilePush(struct Pile *pile, char *str);
 
-void pilePop(struct Pile *pile) {
-    pile->index--;
-}
+void pilePop(struct Pile *pile);
 
-char* pileTop(struct Pile *pile) {
-    return (pile->tableau_str[pile->index - 1]);
-}
+char* pileTop(struct Pile *pile);
 
-int pileSize(struct Pile *pile) {
-    return (pile->index);
-}
+int pileSize(struct Pile *pile);
+
+void pilePrint(struct Pile *pile);

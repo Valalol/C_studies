@@ -1,6 +1,11 @@
 #include <stdio.h>
+#include "pile.h"
 
 int main() {
-    int a;
-    printf("%d", a);
+    struct Pile mapile;
+    init_pile(&mapile);
+    pilePush(&mapile, "MES MINIONNNS");
+    pilePush(&mapile, "NOUS ALLONS VOLER");
+    pilePush(&mapile, "LA LUUUUUUUUUNNEEE");
+    pilePrint(&mapile);
 }
