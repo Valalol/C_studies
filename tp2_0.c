@@ -2,7 +2,28 @@
 #include <stdio.h>
 #include <time.h>
 
-#define taille 20
+#define taille 30
+
+
+int croissante(int a, int b) {
+    return (a<b);
+}
+
+
+int decroissante(int a, int b) {
+    return (a>b);
+}
+
+
+int pair_impair(int a, int b) {
+    int parité_a = a%2;
+    int parité_b = b%2;
+    if (parité_a == parité_b) {
+        return (a<b);
+    } else {
+        return (parité_a<parité_b);
+    }
+}
 
 
 void randomize_tableau(int *tableau, int length) {
@@ -17,8 +38,10 @@ void randomize_tableau(int *tableau, int length) {
 
 void print_tableau(int *tableau, int length) {
     for (int i = 0; i < length; i++) {
-        printf("[%d] %d\n", i, tableau[i]);
+        // printf("[%d] %d\n", i, tableau[i]);
+        printf("%d, ", tableau[i]);
     }
+    printf("\n");
     return;
 }
 
@@ -44,46 +67,43 @@ void sort(int *tableau) {
     return;
 }
 
-
-int partition(int *tableau, int low, int high) {
-    int pivot = tableau[high];
-    int i = low - 1;
-
-    for (int j = low; j < high - 1; j++) {
-        if (tableau[j] <= pivot) {
-            i++;
-            swap_tableau(tableau, i, j);
+int partition(int *tableau, int low, int high, int (*sort_func) (int, int)) {
+    int valeur_pivot = tableau[low];
+    int index_pivot = low;
+    for (int i = low+1; i <= high; i++) {
+        if ((*sort_func)(tableau[i], valeur_pivot)) {
+            swap_tableau(tableau, i, index_pivot+1);
+            swap_tableau(tableau, index_pivot, index_pivot+1);
+            index_pivot++;
         }
     }
-
-    i++;
-    swap_tableau(tableau, i, high);
-    return i;
+    return(index_pivot);
 }
 
 
-void quicksort(int *tableau, int low, int high) {
+void rec_quicksort(int *tableau, int low, int high, int (*sort_func) (int, int)) {
     if (low >= high || low < 0) {
-        // print_tableau(tableau, taille);
+        return;
+    } else {
+        int index_pivot = partition(tableau, low, high, sort_func);
+        rec_quicksort(tableau, low, index_pivot-1, sort_func);
+        rec_quicksort(tableau, index_pivot+1, high, sort_func);
         return;
     }
-    int p = partition(tableau, low, high);
+}
 
-    quicksort(tableau, low, p-1);
-    quicksort(tableau, p, high);
+void quicksort(int *tableau, int length) {
+    rec_quicksort(tableau, 0, length-1, &croissante);
 }
 
 
 int main() {
     int tableau[taille];
-
     randomize_tableau(tableau, taille);
 
     print_tableau(tableau, taille);
-    printf("%d", is_sorted(tableau, taille));
-
-    quicksort(tableau, 0, taille-1);
-
+    quicksort(tableau, taille);
     print_tableau(tableau, taille);
-    printf("%d", is_sorted(tableau, taille));
+
+    void (*sort_func_pointers[]) (int*, int) = {quicksort};
 }
