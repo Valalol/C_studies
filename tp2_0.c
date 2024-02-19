@@ -43,10 +43,10 @@ int main() {
     float time_taken;
     randomize_tableau(tableau, taille);
 
-    void (*sort_func_pointers[]) (int*, int) = {quicksort, bubble_sort};
-    char function_names[20][20] = {"quicksort", "bubble_sort"};
+    void (*sort_func_pointers[]) (int*, int) = {quicksort, selection_sort, bubble_sort};
+    char function_names[20][20] = {"quicksort", "selection_sort", "bubble_sort"};
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
         memcpy(tableau_test, tableau, sizeof(tableau));
         // print_tableau(tableau_test, taille);
 

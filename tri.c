@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "tri.h"
 #include "comparaison.h"
 
@@ -36,6 +37,33 @@ void quicksort(int *tableau, int length) {
     return;
 }
 
+void selection_sort(int *tableau, int length) {
+    int min_value, min_index;
+    for (int i = 0; i < length; i++) {
+        min_value = tableau[i];
+        min_index = i;
+        for (int j = i; j < length; j++) {
+            if (tableau[j] < min_value) {
+                min_index = j;
+                min_value = tableau[j];
+            }
+        }
+        swap_tableau(tableau, i, min_index);
+    }
+    return;
+}
+
 void bubble_sort(int *tableau, int length) {
+    int sorted = 0;
+    
+    while (!sorted) {
+        sorted = 1;
+        for (int i = 0; i < length-1; i++) {
+            if (tableau[i] > tableau[i+1]) {
+                sorted = 0;
+                swap_tableau(tableau, i, i+1);
+            }
+        }
+    }
     return;
 }
