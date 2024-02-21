@@ -1,5 +1,5 @@
 #ifndef _LISTE_H
-	#define _LISTE_H
+#define _LISTE_H
 
 typedef int Data;
 typedef struct SCell SCell;
