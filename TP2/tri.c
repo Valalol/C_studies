@@ -74,3 +74,13 @@ void bubble_sort(int *tableau, int length, int (*sort_func) (int, int)) {
     }
     return;
 }
+
+int is_sorted(int *tableau, int length, int (*sort_key) (int, int)) {
+    // check si toutes les valeurs sont dans le bon sens
+    for (int i = 0; i < length-1; i++) {
+        if (!sort_key(tableau[i], tableau[i+1])) {
+            return 0;
+        }
+    }
+    return 1; 
+}

@@ -4,37 +4,9 @@
 #include <string.h>
 #include "tri.h"
 #include "comparaison.h"
+#include "random.h"
+#include "tableau.h"
 
-
-void randomize_tableau(int *tableau, int length) {
-    // met une seed à peu près random (en fonction du temps)
-    srand(time(NULL));
-    
-    // remplit le tableau de valeurs random
-    for (int i = 0; i<length; i++) {
-        tableau[i] = rand();
-    }
-    return;
-}
-
-void print_tableau(int *tableau, int length) {
-    // fonction de debug pour visualiser le tableau
-    for (int i = 0; i < length; i++) {
-        printf("%d, ", tableau[i]);
-    }
-    printf("\n");
-    return;
-}
-
-int is_sorted(int *tableau, int length, int (*sort_key) (int, int)) {
-    // check si toutes les valeurs sont dans le bon sens
-    for (int i = 0; i < length-1; i++) {
-        if (!sort_key(tableau[i], tableau[i+1])) {
-            return 0;
-        }
-    }
-    return 1; 
-}
 
 float sort_timer(int *tableau_test, int length, void (sort_func) (int*, int, int (int, int)), int (sort_key) (int, int)) {
     // lance une fonction de tri en mesurant son temps d'execution
@@ -51,7 +23,7 @@ float sort_timer(int *tableau_test, int length, void (sort_func) (int*, int, int
 
 
 int main() {
-    int taille = 1000;
+    int taille = 10000;
 
     // on crée notre tableau et notre copie pour les tests
     int tableau[taille];

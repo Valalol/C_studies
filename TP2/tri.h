@@ -6,3 +6,5 @@ void rec_quicksort(int *tableau, int low, int high, int (*sort_func) (int, int))
 void quicksort(int *tableau, int length, int (*sort_func) (int, int));
 void selection_sort(int *tableau, int length, int (*sort_func) (int, int));
 void bubble_sort(int *tableau, int length, int (*sort_func) (int, int));
+
+int is_sorted(int *tableau, int length, int (*sort_key) (int, int));
