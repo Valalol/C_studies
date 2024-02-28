@@ -44,6 +44,26 @@ int main()
 	PrintList(list);
 	printf("\n");
 
+	printf("Delete 1\n");
+	DeleteCell(list, GetFirstElement(list));
+	PrintList(list);
+	printf("\n");
+
+	printf("Delete 8\n");
+	DeleteCell(list, GetLastElement(list));
+	PrintList(list);
+	printf("\n");
+
+	printf("Add 9\n");
+	AddElementAfter(list, GetLastElement(list), 9);
+	PrintList(list);
+	printf("\n");
+
+	printf("Add 10\n");
+	AddElementAfter(list, GetLastElement(list), 10);
+	PrintList(list);
+	printf("\n");
+
 	DeleteList(list);
 
 	return 0;

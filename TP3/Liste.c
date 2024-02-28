@@ -3,6 +3,8 @@
 
 #include "Liste.h"
 
+#define taille_bloc 5
+
 struct SCell {
     Data value;
     SCell *prev_cell;
@@ -10,65 +12,99 @@ struct SCell {
 };
 
 struct SList {
-    SCell *premier;
-    SCell *dernier;
-    SCell **current_block;
+    SCell *first;
+    SCell *last;
+    SBlock *current_block;
+    int current_index;
+    // Recyclage
+    SCell *recycle_first;
 };
+
+struct SBlock {
+    SBlock *prev;
+    SCell cells[taille_bloc];
+};
+
+SCell* CreateCell(SList *list) {
+    if (list->recycle_first != NULL) {
+        SCell *recycled_cell =  list->recycle_first;
+        list->recycle_first = recycled_cell->next_cell;
+        printf("Recycling a cell, old_value = %d\n", recycled_cell->value);
+        return recycled_cell;
+    }
+
+    if (list->current_index == taille_bloc) {
+        printf("Creating a new block\n");
+        SBlock *new_block = (SBlock*) malloc(sizeof(SBlock));
+        new_block->prev = list->current_block;
+        list->current_index = 0;
+        list->current_block = new_block;
+    }
+
+    list->current_index++;
+
+    return &(list->current_block->cells[list->current_index-1]);
+}
 
 SList* CreateList() {
     SList *list = (SList*) malloc(sizeof(SList));
-    list->premier = NULL;
-    list->current_block = NULL;
+    SBlock *new_block = (SBlock*) malloc(sizeof(SCell)*taille_bloc);
+    new_block->prev = NULL;
+    list->first = NULL;
+    list->last = NULL;
+    list->current_index = 0;
+    list->current_block = new_block;
+    list->recycle_first = NULL;
     return list;
 }
 
 void DeleteList(SList *list) {
+    while(list->current_block->prev != NULL) {
+        SBlock *nextDeleteBlock = list->current_block->prev;
+        free(list->current_block);
+        list->current_block = nextDeleteBlock;
+    }
     free(list);
 }
 
-
-
 SCell* AddElementBegin(SList *list,Data elem) {
-    // if (list->current_block == NULL || )
-    SCell *new_cell = (SCell*) malloc(sizeof(SCell));
+    SCell *new_cell = (SCell*) CreateCell(list);
     new_cell->value = elem;
     new_cell->prev_cell = NULL;
-    new_cell->next_cell = list->premier;
+    new_cell->next_cell = list->first;
     
-    if (list->premier != NULL) {
+    if (list->first != NULL) {
         // si liste vide
-        list->premier->prev_cell = new_cell;
+        list->first->prev_cell = new_cell;
     } else {
         // si liste non vide
-        list->dernier = new_cell;
+        list->last = new_cell;
     }
-    list->premier = new_cell;
+    list->first = new_cell;
     
     return new_cell;
 }
-
 
 SCell* AddElementEnd(SList *list,Data elem) {
-    SCell *new_cell = (SCell*) malloc(sizeof(SCell));
+    SCell *new_cell = CreateCell(list);
     new_cell->value = elem;
-    new_cell->prev_cell = list->dernier;
+    new_cell->prev_cell = list->last;
     new_cell->next_cell = NULL;
     
-    if (list->dernier != NULL) {
+    if (list->last != NULL) {
         // si liste vide
-        list->dernier->next_cell = new_cell;
+        list->last->next_cell = new_cell;
     } else {
         // si liste non vide
-        list->premier = new_cell;
+        list->first = new_cell;
     }
-    list->dernier = new_cell;
-    
+    list->last = new_cell;
+
     return new_cell;
 }
 
-
-SCell* AddElementAfter(SList *list,SCell *cell,Data elem) {
-    SCell *new_cell = (SCell*) malloc(sizeof(SCell));
+SCell* AddElementAfter(SList *list, SCell *cell, Data elem) {
+    SCell *new_cell = CreateCell(list);
     new_cell->value = elem;
     new_cell->prev_cell = cell->prev_cell;
     new_cell->next_cell = cell->next_cell;
@@ -76,35 +112,35 @@ SCell* AddElementAfter(SList *list,SCell *cell,Data elem) {
     if (cell->next_cell != NULL) {
         cell->next_cell->prev_cell = new_cell;
     } else {
-        list->dernier = new_cell;
+        list->last = new_cell;
     }
     cell->next_cell = new_cell;
 
     return new_cell;
 }
 
-
 void DeleteCell(SList *list,SCell *cell) {
     if (cell->prev_cell != NULL) {
         cell->prev_cell->next_cell = cell->next_cell;
     } else {
-        list->premier = cell->next_cell;
+        list->first = cell->next_cell;
     }
     if (cell->next_cell != NULL) {
         cell->next_cell->prev_cell = cell->prev_cell;
     } else {
-        list->dernier = cell->prev_cell;
+        list->last = cell->prev_cell;
     }
 
-    free(cell);
+    cell->next_cell = list->recycle_first;
+    list->recycle_first = cell;
 }
 
 SCell* GetFirstElement(SList *list) {
-    return list->premier;
+    return list->first;
 }
 
 SCell* GetLastElement(SList *list) {
-    return list->dernier;
+    return list->last;
 }
 
 SCell* GetPrevElement(SCell *cell) {

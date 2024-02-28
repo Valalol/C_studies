@@ -4,6 +4,7 @@
 typedef int Data;
 typedef struct SCell SCell;
 typedef struct SList SList;
+typedef struct SBlock SBlock;
 
 SList* CreateList();
 void DeleteList(SList *list);
