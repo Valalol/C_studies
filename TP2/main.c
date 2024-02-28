@@ -14,9 +14,11 @@ float sort_timer(int *tableau_test, int length, void (sort_func) (int*, int, int
     float time_taken;
 
     t = clock();
+    // on lance la fonction de tri
     sort_func(tableau_test, length, sort_key);
     t = clock() - t;
 
+    // on calcule le temps pris en divisant pas CLOCKS_PER8SEC
     time_taken = ((double)t)/CLOCKS_PER_SEC;
     return time_taken;
 }

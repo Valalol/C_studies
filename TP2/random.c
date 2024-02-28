@@ -9,6 +9,7 @@ void init_random() {
 }
 
 int random_value(int min, int max) {
+    // On prend une valeur random entre min et max
     int value = rand() % (max-min) + min;
     return value;
 }

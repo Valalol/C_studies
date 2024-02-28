@@ -1,0 +1,1 @@
+gcc comparaison.c random.c tableau.c tri.c main.c -o output.exe -Wall
