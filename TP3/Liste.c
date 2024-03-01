@@ -48,7 +48,7 @@ SCell* CreateCell(SList *list) {
 
 SList* CreateList() {
     SList *list = (SList*) malloc(sizeof(SList));
-    SBlock *new_block = (SBlock*) malloc(sizeof(SCell)*taille_bloc);
+    SBlock *new_block = (SBlock*) malloc(sizeof(SBlock));
     new_block->prev = NULL;
     list->first = NULL;
     list->last = NULL;
@@ -59,7 +59,7 @@ SList* CreateList() {
 }
 
 void DeleteList(SList *list) {
-    while(list->current_block->prev != NULL) {
+    while (list->current_block != NULL) {
         SBlock *nextDeleteBlock = list->current_block->prev;
         free(list->current_block);
         list->current_block = nextDeleteBlock;
