@@ -5,28 +5,11 @@
 
 void PrintList(SList *list);
 
-int main()
-{
+void madoc_test() {
 	SList *list;
 	SCell *cell;
 
 	list=CreateList();
-
-	// clock_t start, end;
-    // float time_taken;
-
-	// start = clock();
-	// for (int i = 0; i<1000000000; i++) {
-	// 	AddElementBegin(list, 5);
-	// }
-    // end = clock();
-
-	// printf("%ld\n", start);
-	// printf("%ld\n", end);
-    // // on calcule le temps pris en divisant pas CLOCKS_PER8SEC
-    // time_taken = ((float) (end - start))/CLOCKS_PER_SEC;
-	// printf("Time taken : %fs\n", time_taken);
-
 
 	printf("Add 5, 3, 1\n");
 	AddElementBegin(list,5);
@@ -84,7 +67,39 @@ int main()
 	printf("Début free de la liste");
 	DeleteList(list);
 
-	return 0;
+	return;
+}
+
+
+void test_time() {
+	SList *list;
+
+	list=CreateList();
+
+	clock_t start, end;
+    float time_taken;
+
+	start = clock();
+	for (int i = 0; i<1000000; i++) {
+		AddElementBegin(list, i);
+	}
+    end = clock();
+
+	printf("%ld\n", start);
+	printf("%ld\n", end);
+    // on calcule le temps pris en divisant pas CLOCKS_PER8SEC
+    time_taken = ((float) (end - start))/CLOCKS_PER_SEC;
+	printf("Time taken : %fs\n", time_taken);
+
+	printf("Début free de la liste");
+	DeleteList(list);
+
+	return;
+}
+
+
+int main() {
+	madoc_test();
 }
 
 
