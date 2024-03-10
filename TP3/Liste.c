@@ -26,6 +26,7 @@ struct SBlock {
 };
 
 SCell* CreateCell(SList *list) {
+    // Si une cell peut etre recyclée, on l'utilise en priorité
     if (list->recycle_first != NULL) {
         SCell *recycled_cell =  list->recycle_first;
         list->recycle_first = recycled_cell->next_cell;
@@ -33,6 +34,7 @@ SCell* CreateCell(SList *list) {
         return recycled_cell;
     }
 
+    // si le bloc actuel n'a plus de cellule vides, on en crée un nouveau
     if (list->current_index == taille_bloc) {
         printf("Creating a new block\n");
         SBlock *new_block = (SBlock*) malloc(sizeof(SBlock));
@@ -41,8 +43,8 @@ SCell* CreateCell(SList *list) {
         list->current_block = new_block;
     }
 
+    // on renvoit l'adresse de la première cellule allouée non utilisée
     list->current_index++;
-
     return &(list->current_block->cells[list->current_index-1]);
 }
 
@@ -131,6 +133,7 @@ void DeleteCell(SList *list,SCell *cell) {
         list->last = cell->prev_cell;
     }
 
+    // au lieu de free la cellule, on la place sur la pile de recyclage
     cell->next_cell = list->recycle_first;
     list->recycle_first = cell;
 }
